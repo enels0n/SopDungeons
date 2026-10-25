@@ -27,18 +27,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.UUID;
 
 public final class SopDungeonsPlugin extends JavaPlugin {
     private static final String[] BUNDLED_MODULES = {
-            "maze_entrance.schem", "maze_transition.schem", "maze_exit.schem", "maze_return_portal.schem",
-            "maze_stairs_up.schem", "maze_stairs_down.schem",
-            "maze_corridor_straight.schem", "maze_corridor_corner.schem",
-            "maze_junction_t.schem", "maze_junction_cross.schem",
-            "maze_room_straight.schem", "maze_room_corner.schem", "maze_room_t.schem",
-            "maze_dead_end.schem", "maze_boss_straight.schem", "maze_boss_corner.schem",
-            "maze_boss_t.schem", "maze_boss_cross.schem"
+            "entrance.schem", "transition.schem", "exit.schem", "stairs_up.schem", "stairs_down.schem",
+            "corridor_straight.schem", "corridor_corner.schem", "junction_t.schem", "junction_cross.schem",
+            "room_straight.schem", "room_corner.schem", "room_t.schem", "dead_end.schem",
+            "boss_straight.schem", "boss_corner.schem", "boss_t.schem", "boss_cross.schem"
     };
 
     private DungeonManager manager;
@@ -122,12 +118,7 @@ public final class SopDungeonsPlugin extends JavaPlugin {
         for (String id : modules.getKeys(false)) {
             if (!id.startsWith("sample_") && !id.startsWith("maze_")) return false;
         }
-        if (!modules.contains("maze_stairs_up") || !modules.contains("maze_stairs_down")
-                || !modules.contains("maze_return_portal")
-                || modules.getMapList("maze_stairs_up.connectors").size() != 1
-                || modules.getMapList("maze_stairs_down.connectors").size() != 1) return true;
-        Map<?, ?> connector = modules.getMapList("maze_stairs_up.connectors").get(0);
-        return connector.containsKey("x") || connector.containsKey("z");
+        return true;
     }
 
     private void startSessionCleanup() {

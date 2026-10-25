@@ -1,4 +1,7 @@
 target/
+examples/
+tools/
+ген/
 .idea/
 .vscode/
 .settings/
