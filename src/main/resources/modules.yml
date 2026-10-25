@@ -16,6 +16,11 @@ modules:
     type: EXIT
     schematic: exit.schem
     rotations: [0, 90, 180, 270]
+    connectors: *straight
+  return_portal:
+    type: EXIT
+    schematic: maze_return_portal.schem
+    rotations: [0, 90, 180, 270]
     connectors:
       - {id: inside, kind: ENTRY, y: 1, direction: WEST}
   stairs_up:

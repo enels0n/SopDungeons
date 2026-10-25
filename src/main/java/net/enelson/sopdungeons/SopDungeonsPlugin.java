@@ -31,7 +31,8 @@ import java.util.UUID;
 
 public final class SopDungeonsPlugin extends JavaPlugin {
     private static final String[] BUNDLED_MODULES = {
-            "entrance.schem", "transition.schem", "exit.schem", "stairs_up.schem", "stairs_down.schem",
+            "entrance.schem", "transition.schem", "exit.schem", "maze_return_portal.schem",
+            "stairs_up.schem", "stairs_down.schem",
             "corridor_straight.schem", "corridor_corner.schem", "junction_t.schem", "junction_cross.schem",
             "room_straight.schem", "room_corner.schem", "room_t.schem", "dead_end.schem",
             "boss_straight.schem", "boss_corner.schem", "boss_t.schem", "boss_cross.schem"
@@ -115,10 +116,17 @@ public final class SopDungeonsPlugin extends JavaPlugin {
 
     private boolean isOldBundledModuleSet(ConfigurationSection modules) {
         if (modules.getKeys(false).isEmpty()) return false;
+        boolean oldNamesOnly = true;
         for (String id : modules.getKeys(false)) {
-            if (!id.startsWith("sample_") && !id.startsWith("maze_")) return false;
+            if (!id.startsWith("sample_") && !id.startsWith("maze_")) {
+                oldNamesOnly = false;
+                break;
+            }
         }
-        return true;
+        if (oldNamesOnly) return true;
+        return modules.contains("entrance") && modules.contains("exit")
+                && modules.contains("stairs_up") && modules.contains("stairs_down")
+                && !modules.contains("return_portal");
     }
 
     private void startSessionCleanup() {

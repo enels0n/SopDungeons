@@ -28,7 +28,7 @@ public final class BundledModulesConfigTest {
                 new InputStreamReader(stream, StandardCharsets.UTF_8));
         ConfigurationSection modules = yaml.getConfigurationSection("modules");
         assertNotNull(modules);
-        assertEquals(17, modules.getKeys(false).size());
+        assertEquals(18, modules.getKeys(false).size());
         assertEquals(2, modules.getMapList("transition.connectors").size());
         assertEquals(3, modules.getMapList("room_t.connectors").size());
         assertNotNull(modules.getConfigurationSection("room_corner.spawns.monsters"));
@@ -39,7 +39,8 @@ public final class BundledModulesConfigTest {
         assertEquals(6, ((Number) modules.getMapList("stairs_down.connectors").get(0).get("y")).intValue());
         assertFalse(modules.getMapList("stairs_up.connectors").get(0).containsKey("x"));
         assertFalse(modules.getMapList("stairs_up.connectors").get(0).containsKey("z"));
-        assertEquals(1, modules.getMapList("exit.connectors").size());
+        assertEquals(2, modules.getMapList("exit.connectors").size());
+        assertEquals(1, modules.getMapList("return_portal.connectors").size());
     }
 
     @Test
