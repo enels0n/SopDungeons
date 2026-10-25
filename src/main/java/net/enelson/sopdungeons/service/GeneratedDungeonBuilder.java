@@ -45,6 +45,7 @@ public final class GeneratedDungeonBuilder {
     private final int envelopePadding;
     private final Material envelopeMaterial;
     private final int moduleSize;
+    private final ChunkPreparationService chunkPreparation;
 
     public GeneratedDungeonBuilder(JavaPlugin plugin, ModuleRepository modules, int floorSpacing) {
         this.plugin = plugin;
@@ -65,6 +66,7 @@ public final class GeneratedDungeonBuilder {
         Material configuredMaterial = Material.matchMaterial(plugin.getConfig().getString(
                 "generation.modules.envelope-material", "STONE"));
         this.envelopeMaterial = configuredMaterial == null ? Material.STONE : configuredMaterial;
+        this.chunkPreparation = new ChunkPreparationService(plugin);
     }
 
     public CompletableFuture<DungeonDefinition> build(UUID sessionId, DungeonDefinition source, World world) {
@@ -115,6 +117,8 @@ public final class GeneratedDungeonBuilder {
         private Cuboid rockEnvelope;
         private boolean envelopeFilled;
         private int envelopeY;
+        private CompletableFuture<ChunkPreparationService.PreparedChunks> chunkPreparationFuture;
+        private ChunkPreparationService.PreparedChunks preparedChunks;
 
         private GenerationJob(UUID sessionId, DungeonDefinition source, DungeonDefinition result, World world,
                               CompletableFuture<DungeonDefinition> future) {
@@ -130,6 +134,7 @@ public final class GeneratedDungeonBuilder {
             try {
                 if (plan == null) prepareFloor();
                 if (!envelopeFilled) {
+                    if (!chunksReady()) return;
                     if (envelopeY <= rockEnvelope.getMaxY()) {
                         worldEdit.fill(new Cuboid(world.getName(), rockEnvelope.getMinX(), envelopeY,
                                 rockEnvelope.getMinZ(), rockEnvelope.getMaxX(), envelopeY,
@@ -149,9 +154,21 @@ public final class GeneratedDungeonBuilder {
                 future.complete(result);
                 cancel();
             } catch (Exception exception) {
+                releasePreparedChunks();
                 future.completeExceptionally(exception);
                 cancel();
             }
+        }
+
+        private boolean chunksReady() throws Exception {
+            if (preparedChunks != null) return true;
+            if (chunkPreparationFuture == null) {
+                chunkPreparationFuture = chunkPreparation.prepare(world, rockEnvelope);
+                return false;
+            }
+            if (!chunkPreparationFuture.isDone()) return false;
+            preparedChunks = chunkPreparationFuture.get();
+            return true;
         }
 
         private void prepareFloor() throws IOException {
@@ -163,6 +180,8 @@ public final class GeneratedDungeonBuilder {
             int originZ = (number - 1) * stride;
             floorBounds = null;
             moduleIndex = 0;
+            chunkPreparationFuture = null;
+            preparedChunks = null;
             floor = result.getOrCreateFloor(number);
 
             ModuleMazeLayoutGenerator.Layout layout = new ModuleMazeLayoutGenerator(
@@ -405,6 +424,13 @@ public final class GeneratedDungeonBuilder {
                         exitPortalZ - 1, exitPortalX + 1, exitPortalY + 2, exitPortalZ + 1));
             }
             if (number == 1) result.setEntrance(floor.getArrivalFromUp());
+            releasePreparedChunks();
+        }
+
+        private void releasePreparedChunks() {
+            if (preparedChunks != null) preparedChunks.release();
+            preparedChunks = null;
+            chunkPreparationFuture = null;
         }
 
     }

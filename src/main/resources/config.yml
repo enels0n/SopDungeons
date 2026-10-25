@@ -41,6 +41,11 @@ mobs:
 generation:
   floor-spacing: 512
   default-normal-rooms: 5
+  chunk-preparation:
+    # Prepare and hold target chunks before FAWE touches them to avoid synchronous chunk waits.
+    enabled: true
+    max-concurrent: 4
+    timeout-seconds: 120
   generated-world:
     # Generated dungeon worlds stay at this time with clear weather and no vanilla mob spawning.
     time: 6000
