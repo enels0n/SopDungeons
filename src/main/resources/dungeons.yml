@@ -1,0 +1,5 @@
+# Definitions can be created and edited with /sd commands.
+# STATIC uses an already loaded shared world.
+# TEMPLATE clones templates/<template> into a temporary world for each run.
+# GENERATED creates one persistent void world and assembles it from modules.yml.
+dungeons: {}

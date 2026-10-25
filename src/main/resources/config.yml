@@ -1,0 +1,95 @@
+# What happens after a player dies inside a dungeon:
+# DUNGEON_ENTRANCE, CURRENT_FLOOR or SERVER_RESPAWN.
+death-mode: DUNGEON_ENTRANCE
+
+# Plugin-owned generated/template worlds use this prefix. Generated worlds persist until /sd delete.
+instance-world-prefix: "sopdungeon_"
+
+# A cloned TEMPLATE session without online participants is closed after this delay.
+empty-session-timeout-seconds: 300
+
+# Shows which floor trigger fired and where it leads. Useful while setting up a dungeon.
+debug-transitions: false
+
+# Floor transition effect and temporary arrival protection.
+transitions:
+  fade-enabled: true
+  fade-before-ticks: 10
+  fade-after-ticks: 20
+  invulnerability:
+    duration-ticks: 100
+    until-first-movement: true
+    movement-grace-ticks: 10
+
+# Animated return circle in the final module. Entering it leaves the dungeon.
+exit-portal:
+  particles-enabled: true
+  particle-interval-ticks: 4
+  radius: 1.6
+  view-distance: 48.0
+
+# SopDungeons removes only mobs it spawned itself. Regular mobs are active only near dungeon players.
+mobs:
+  despawn:
+    enabled: true
+    distance: 48.0
+    check-interval-ticks: 20
+    # Bosses stay alive until killed or until the dungeon session ends.
+    despawn-bosses: false
+
+# Distance between generated floors. Rooms inside a floor are connected by module connectors.
+generation:
+  floor-spacing: 512
+  default-normal-rooms: 5
+  generated-world:
+    # Generated dungeon worlds stay at this time with clear weather and no vanilla mob spawning.
+    time: 6000
+  modules:
+    # Square module footprint. Must be odd; bundled schematics use 15.
+    size: 15
+    # The room count passed to /sd generation controls the maze scale.
+    minimum-cells: 30
+    cells-per-room: 5
+    # Chance to connect neighbouring maze cells with an additional cycle.
+    loop-chance: 0.12
+    # Schematics are carved into this solid block volume instead of floating in a void.
+    envelope-material: STONE
+    envelope-padding: 5
+  catacombs:
+    width: 480
+    length: 480
+    height: 10
+    corridor:
+      min-width: 5
+      max-width: 7
+    spacing:
+      min: 15
+      max: 24
+    loop-chance: 0.06
+    boss-room-radius: 9
+    visuals:
+      # Distance between diagonal ceiling-light lines in corridors.
+      light-spacing: 14
+    boss:
+      provider: VANILLA
+      mob: HUSK
+    rooms:
+      provider: VANILLA
+      mob: ZOMBIE
+      amount: 3
+      radius: 4.0
+      respawn-delay-seconds: 45
+      spawn-interval-ticks: 10
+
+messages:
+  prefix: "&8[&6SopDungeons&8] &r"
+  no-permission: "&cНедостаточно прав."
+  player-only: "&cЭта команда доступна только игроку."
+  not-found: "&cПодземелье не найдено: &f{id}"
+  no-selection: "&cСначала выделите область через WorldEdit или команды /sd pos1 и /sd pos2."
+  saved: "&aИзменения сохранены."
+  floor-locked: "&cПроход закрыт. Сначала победите босса этого этажа."
+  missing-arrival: "&cДля целевого этажа не задана точка прибытия. Проверьте /sd info {id}."
+  entered: "&aВы вошли в подземелье &f{id}&a."
+  left: "&eВы покинули подземелье."
+  boss-unlocked: "&aБосс побежден. Проход на следующий этаж открыт навсегда для этого забега."

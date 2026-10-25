@@ -1,0 +1,146 @@
+# Bundled modules use separate non-overlapping 15x15 cells; stairs are 12 blocks high, others are 7.
+modules:
+  maze_entrance:
+    type: ENTRANCE
+    schematic: maze_entrance.schem
+    rotations: [0, 90, 180, 270]
+    connectors: &straight
+      - {id: west, kind: ENTRY, y: 1, direction: WEST}
+      - {id: east, kind: EXIT, y: 1, direction: EAST}
+  maze_transition:
+    type: TRANSITION
+    schematic: maze_transition.schem
+    rotations: [0, 90, 180, 270]
+    connectors: *straight
+  maze_exit:
+    type: EXIT
+    schematic: maze_exit.schem
+    rotations: [0, 90, 180, 270]
+    connectors: *straight
+  maze_return_portal:
+    type: EXIT
+    schematic: maze_return_portal.schem
+    rotations: [0, 90, 180, 270]
+    connectors:
+      - {id: inside, kind: ENTRY, y: 1, direction: WEST}
+  maze_stairs_up:
+    type: STAIRS_UP
+    schematic: maze_stairs_up.schem
+    rotations: [0, 90, 180, 270]
+    connectors:
+      - {id: inside, kind: ENTRY, y: 1, direction: EAST}
+  maze_stairs_down:
+    type: STAIRS_DOWN
+    schematic: maze_stairs_down.schem
+    rotations: [0, 90, 180, 270]
+    connectors:
+      - {id: inside, kind: ENTRY, y: 8, direction: WEST}
+
+  maze_corridor_straight:
+    type: NORMAL
+    schematic: maze_corridor_straight.schem
+    weight: 5
+    rotations: [0, 90]
+    connectors: *straight
+  maze_room_straight:
+    type: NORMAL
+    schematic: maze_room_straight.schem
+    weight: 2
+    rotations: [0, 90]
+    connectors: *straight
+    spawns: &room_spawns
+      monsters:
+        provider: VANILLA
+        mob: ZOMBIE
+        x: 7
+        y: 1
+        z: 7
+        amount: 2
+        radius: 3
+        respawn: {mode: AFTER_DELAY, delay-seconds: 30}
+        spawn-interval-ticks: 10
+  maze_corridor_corner:
+    type: NORMAL
+    schematic: maze_corridor_corner.schem
+    weight: 5
+    rotations: [0, 90, 180, 270]
+    connectors: &corner
+      - {id: west, kind: ENTRY, y: 1, direction: WEST}
+      - {id: south, kind: EXIT, y: 1, direction: SOUTH}
+  maze_room_corner:
+    type: NORMAL
+    schematic: maze_room_corner.schem
+    weight: 2
+    rotations: [0, 90, 180, 270]
+    connectors: *corner
+    spawns: *room_spawns
+  maze_junction_t:
+    type: NORMAL
+    schematic: maze_junction_t.schem
+    weight: 4
+    rotations: [0, 90, 180, 270]
+    connectors: &junction_t
+      - {id: west, kind: ENTRY, y: 1, direction: WEST}
+      - {id: east, kind: EXIT, y: 1, direction: EAST}
+      - {id: south, kind: GENERIC, y: 1, direction: SOUTH}
+  maze_room_t:
+    type: NORMAL
+    schematic: maze_room_t.schem
+    weight: 2
+    rotations: [0, 90, 180, 270]
+    connectors: *junction_t
+    spawns: *room_spawns
+  maze_junction_cross:
+    type: NORMAL
+    schematic: maze_junction_cross.schem
+    weight: 3
+    rotations: [0, 90, 180, 270]
+    connectors: &junction_cross
+      - {id: west, kind: ENTRY, y: 1, direction: WEST}
+      - {id: east, kind: EXIT, y: 1, direction: EAST}
+      - {id: north, kind: GENERIC, y: 1, direction: NORTH}
+      - {id: south, kind: GENERIC, y: 1, direction: SOUTH}
+  maze_dead_end:
+    type: DEAD_END
+    schematic: maze_dead_end.schem
+    weight: 1
+    rotations: [0, 90, 180, 270]
+    connectors:
+      - {id: entry, kind: ENTRY, y: 1, direction: WEST}
+      - {id: closed, kind: EXIT, y: 1, direction: WEST}
+
+  maze_boss_straight:
+    type: BOSS
+    schematic: maze_boss_straight.schem
+    rotations: [0, 90]
+    connectors: *straight
+    spawns: &boss_spawn
+      boss:
+        provider: VANILLA
+        mob: HUSK
+        x: 7
+        y: 1
+        z: 7
+        amount: 1
+        radius: 0
+        boss: true
+        respawn: {mode: NEVER, delay-seconds: 0}
+        spawn-interval-ticks: 0
+  maze_boss_corner:
+    type: BOSS
+    schematic: maze_boss_corner.schem
+    rotations: [0, 90, 180, 270]
+    connectors: *corner
+    spawns: *boss_spawn
+  maze_boss_t:
+    type: BOSS
+    schematic: maze_boss_t.schem
+    rotations: [0, 90, 180, 270]
+    connectors: *junction_t
+    spawns: *boss_spawn
+  maze_boss_cross:
+    type: BOSS
+    schematic: maze_boss_cross.schem
+    rotations: [0, 90, 180, 270]
+    connectors: *junction_cross
+    spawns: *boss_spawn

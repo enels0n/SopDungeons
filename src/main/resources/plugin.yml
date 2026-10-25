@@ -1,0 +1,15 @@
+name: ${project.name}
+main: net.enelson.sopdungeons.SopDungeonsPlugin
+version: ${project.version}
+authors: [E_NeLsOn]
+api-version: 1.16
+softdepend: [WorldEdit, FastAsyncWorldEdit, EliteMobs]
+commands:
+  sopdungeons:
+    aliases: [dungeon, dungeons, sd]
+    description: SopDungeons commands
+permissions:
+  sopdungeons.admin:
+    default: op
+  sopdungeons.use:
+    default: true
